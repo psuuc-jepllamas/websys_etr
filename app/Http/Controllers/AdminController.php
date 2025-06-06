@@ -72,11 +72,9 @@ class AdminController extends Controller
     public function dashboard(Request $request)
     {
         try {
-            // Get year and month from query parameters
             $selectedYear = $request->query('year', now()->year);
             $selectedMonth = $request->query('month', null);
-            
-            // Validate year and month
+
             if (!in_array($selectedYear, range(2025, 2030))) {
                 $selectedYear = now()->year;
             }
@@ -84,7 +82,6 @@ class AdminController extends Controller
                 $selectedMonth = null;
             }
 
-            // Build queries for total counts
             $undergraduateQuery = DB::table('undergraduates')->whereYear('ordate', $selectedYear);
             $graduateQuery = DB::table('graduates')->whereYear('ordate', $selectedYear);
 
@@ -96,7 +93,6 @@ class AdminController extends Controller
             $undergraduateCount = $undergraduateQuery->count();
             $graduateCount = $graduateQuery->count();
 
-            // Fetch monthly counts for charts
             $undergraduateMonthlyCounts = DB::table('undergraduates')
                 ->select(DB::raw('MONTH(ordate) as month, COUNT(*) as count'))
                 ->whereYear('ordate', $selectedYear)
@@ -119,13 +115,13 @@ class AdminController extends Controller
                 $graduateMonthlyCounts
             );
 
-            // Fetch recent submissions
             $recentUndergraduates = DB::table('undergraduates')
                 ->select(
                     'id',
                     'fullname',
                     'course',
                     'ordate',
+                    'created_at',
                     DB::raw('"Undergraduate" as type'),
                     DB::raw('CONCAT("TC-", course, "-", id, "-UG-", YEAR(ordate)) as control_no')
                 )
@@ -138,6 +134,7 @@ class AdminController extends Controller
                     'fullname',
                     'course',
                     'ordate',
+                    'created_at',
                     DB::raw('"Graduate" as type'),
                     DB::raw('CONCAT("TC-", course, "-", id, "-G-", YEAR(ordate)) as control_no')
                 )
@@ -150,7 +147,6 @@ class AdminController extends Controller
                 ->take(10)
                 ->get();
 
-            // Fetch duplicate attempts
             $duplicateAttempts = DB::table('duplicate_attempts')
                 ->orderBy('attempted_at', 'desc')
                 ->take(5)
@@ -179,6 +175,46 @@ class AdminController extends Controller
                 'selectedMonth' => null,
                 'error' => 'Failed to load dashboard data. Please try again.'
             ]);
+        }
+    }
+
+    public function getStudentData(Request $request)
+    {
+        try {
+            $year = $request->query('year', now()->year);
+            $month = $request->query('month');
+            $type = $request->query('type');
+
+            Log::info('getStudentData called with type: ' . $type);
+            Log::info('getStudentData called with year: ' . $year . ', month: ' . ($month ?? 'null'));
+
+            if (!in_array($year, range(2025, 2030))) {
+                $year = now()->year;
+            }
+            if ($month && !in_array($month, range(1, 12))) {
+                $month = null;
+            }
+
+            $query = $type === 'graduate' ? DB::table('graduates') : DB::table('undergraduates');
+            Log::info('Querying table: ' . ($type === 'graduate' ? 'graduates' : 'undergraduates'));
+
+            $columns = ['id', 'fullname', 'course', 'ordate', 'address'];
+            if ($type !== 'graduate') {
+                $columns[] = 'yearlevel';
+            }
+
+            $query->whereYear('ordate', $year);
+            if ($month) {
+                $query->whereMonth('ordate', $month);
+            }
+            $students = $query->select($columns)->get();
+
+            Log::info('Fetched ' . $students->count() . ' records');
+
+            return response()->json(['students' => $students]);
+        } catch (\Exception $e) {
+            Log::error('Error in getStudentData: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to fetch student data'], 500);
         }
     }
 
@@ -285,12 +321,14 @@ class AdminController extends Controller
 
             $controlNo = "TC-{$student->course}-{$student->id}-{$controlNoSuffix}-{$orDate->year}";
 
+            $course = $this->convertCourse($student->course);
+
             $data = [
                 'controlNo' => $controlNo,
                 'fullname' => $student->fullname,
                 'address' => $student->address,
                 'yearLevel' => $type === 'undergrad' ? $student->yearlevel : '',
-                'course' => $student->course,
+                'course' => $course,
                 'dayOrdinal' => $dayOrdinal,
                 'monthYear' => $monthYear,
             ];
@@ -402,5 +440,24 @@ class AdminController extends Controller
             }
         }
         return 'TH';
+    }
+
+    private function convertCourse($courseCode)
+    {
+        $courseMap = [
+            'BSCE' => 'Bachelor of Science in Civil Engineering',
+            'BSME' => 'Bachelor of Science in Mechanical Engineering',
+            'BSEE' => 'Bachelor of Science in Electrical Engineering',
+            'BSCOE' => 'Bachelor of Science in Computer Engineering',
+            'BSMath' => 'Bachelor of Science in Mathematics',
+            'BSArch' => 'Bachelor of Science in Architecture',
+            'BSIT' => 'Bachelor of Science in Information Technology',
+            'ABEL' => 'Bachelor of Arts in English Language',
+            'BSSE-FIL' => 'Bachelor of Secondary Education major in Filipino',
+            'BSSE-SCI' => 'Bachelor of Secondary Education major in Science',
+            'BECED' => 'Bachelor of Early Childhood Education',
+        ];
+
+        return $courseMap[$courseCode] ?? $courseCode;
     }
 }

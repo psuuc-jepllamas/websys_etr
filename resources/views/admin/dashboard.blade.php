@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - PSU Student Program</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <!-- Tailwind CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-    <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <style>
@@ -26,6 +22,8 @@
         .header {
             background-color: #003087;
             color: white;
+            position: relative;
+            min-height: 100px;
         }
         .header img {
             width: 100px;
@@ -71,6 +69,7 @@
             border: 2px solid #003087;
             border-radius: 10px;
             background-color: #ffffff;
+            cursor: pointer;
         }
         .card-header {
             background-color: #003087;
@@ -81,6 +80,8 @@
         .card-body {
             font-size: 2rem;
             color: #003087;
+            padding: 20px;
+            text-align: center;
         }
         .pre-footer {
             background-color: rgba(135, 206, 250, 0.5);
@@ -124,9 +125,9 @@
             margin-top: 20px;
         }
         .table th, .table td {
-            border: 1px solid #003087; /* Reduced border width */
-            padding: 6px; /* Reduced padding for smaller cells */
-            font-size: 0.9rem; /* Slightly smaller font size */
+            border: 1px solid #003087;
+            padding: 6px;
+            font-size: 1rem;
         }
         .dataTables_wrapper .dataTables_length select,
         .dataTables_wrapper .dataTables_filter input {
@@ -147,28 +148,27 @@
             color: #003087 !important;
             border-color: #ffc107 !important;
         }
-        /* Adjusted DataTable length menu styling */
         .dataTables_wrapper .dataTables_length {
             display: flex;
             align-items: center;
-            gap: 8px; /* Space between elements */
+            gap: 8px;
             margin-bottom: 10px;
         }
         .dataTables_wrapper .dataTables_length label {
-            margin-bottom: 0; /* Remove default margin */
+            margin-bottom: 0;
         }
         .dataTables_wrapper .dataTables_length select {
             width: auto;
-            min-width: 60px; /* Ensure dropdown isn't too small */
+            min-width: 60px;
         }
         #recentDataTable {
             width: 100%;
-            max-width: 800px; /* Reduced max-width for a regular size */
+            max-width: 800px;
             margin: 0 auto;
         }
         .dataTables_wrapper .dataTables_info,
         .dataTables_wrapper .dataTables_paginate {
-            margin: 10px 0; /* Consistent vertical spacing */
+            margin: 10px 0;
         }
         .dataTables_wrapper .bottom {
             display: flex;
@@ -200,11 +200,11 @@
         }
         .notification-btn {
             position: relative;
+            padding: 0.375rem 0.75rem;
         }
         .notification-badge {
             position: absolute;
             top: -10px;
-            right: -10px;
             font-size: 0.8rem;
             padding: 4px 8px;
         }
@@ -220,21 +220,62 @@
         .modal-body {
             background-color: #ffffff;
         }
+        #studentDataModal .modal-body table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #studentDataModal .modal-body th, #studentDataModal .modal-body td {
+            border: 1px solid #003087;
+            padding: 8px;
+            text-align: left;
+        }
+        #studentDataModal .modal-body th {
+            background-color: #003087;
+            color: white;
+        }
+        .filter-form p, 
+        .filter-form label[for="print_year"],
+        .filter-form label[for="print_month"] {
+            font-size: 1.2rem;
+        }
+        .filter-form select#print_period, 
+        .filter-form select#print_month, 
+        .filter-form select#print_year {
+            font-size: 1.2rem;
+        }
+        .dataTables_wrapper .dataTables_length label,
+        .dataTables_wrapper .dataTables_length span {
+            font-size: 1.2rem;
+        }
+        .dataTables_wrapper .dataTables_filter label {
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
     <div class="d-flex flex-column min-vh-100">
         <header class="header py-2">
-            <div class="container d-flex align-items-center">
-                <img src="{{ asset('images/logo.png') }}" alt="Pangasinan State University Logo" class="me-2" style="width: 100px; height: auto;">
-                <h2 class="mb-0">Pangasinan State University - Admin Dashboard</h2>
+            <div class="container d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <img src="{{ asset('images/logo.png') }}" alt="Pangasinan State University Logo" class="me-2" style="width: 70px; height: auto;">
+                    <h2 class="mb-0">Registrar's Office - Admin Dashboard</h2>
+                </div>
+                @php
+                    $unreadCount = $duplicateAttempts->whereNull('read_at')->count();
+                @endphp
+                <button id="notifbutton" class="btn btn-primary notification-btn" data-bs-toggle="modal" data-bs-target="#duplicateAttemptsModal">
+                    <i class="bi bi-bell"></i>
+                    @if ($unreadCount > 0)
+                        <span class="badge bg-danger notification-badge">{{ $unreadCount }}</span>
+                    @endif
+                </button>
             </div>
         </header>
 
         <div class="d-flex flex-grow-1">
             <div class="sidebar">
                 <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><i class="bi bi-kanban"></i> <span class="ms-1">Dashboard</span></a>
-                <a href="{{ route('admin.studentrecords') }}"><i class="bi bi-person-gear"></i> <span class="ms-1">Student Records</span></a>
+                <a href="{{ route('admin.studentrecords') }}"><i class="bi bi-person-gear"></i> <span class="">Student Records</span></a>
                 <a href="{{ route('admin.studentrecords') }}" class="ms-3 {{ request()->routeIs('admin.studentrecords') ? 'active' : '' }}"><i class="bi bi-person"></i> <span class="ms-1">Undergraduate</span></a>
                 <a href="{{ route('admin.studentrecordsgraduate') }}" class="ms-3 {{ request()->routeIs('admin.studentrecordsgraduate') ? 'active' : '' }}"><i class="bi bi-mortarboard"></i> <span class="ms-1">Graduate</span></a>
                 <form action="{{ route('logout') }}" method="post" id="logout_form">
@@ -246,32 +287,19 @@
             <div class="main-content">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2 class="mb-0">Student Program Management</h2>
-                    <!-- Notification Button -->
-                    @php
-                        $unreadCount = $duplicateAttempts->whereNull('read_at')->count();
-                    @endphp
-                    <button class="btn btn-primary notification-btn" data-bs-toggle="modal" data-bs-target="#duplicateAttemptsModal">
-                        <i class="bi bi-bell"></i> Notifications
-                        @if ($unreadCount > 0)
-                            <span class="badge bg-danger notification-badge me-2">{{ $unreadCount }}</span>
-                        @endif
-                    </button>
                 </div>
-                <!-- Error Message -->
                 @if (isset($error))
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         {{ $error }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
-                <!-- Success Message -->
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
-                <!-- Duplicate Attempts Modal -->
                 <div class="modal fade" id="duplicateAttemptsModal" tabindex="-1" aria-labelledby="duplicateAttemptsModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -302,7 +330,36 @@
                         </div>
                     </div>
                 </div>
-                <!-- Year and Month Filter for Cards and Graphs -->
+                <div class="modal fade" id="studentDataModal" tabindex="-1" aria-labelledby="studentDataModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="studentDataModalLabel">Student Data</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Full Name</th>
+                                            <th>Course</th>
+                                            <th>OR Date</th>
+                                            <th>Address</th>
+                                            <th>Year Level</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentDataTable">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <form class="filter-form mb-4" method="GET" action="{{ route('admin.dashboard') }}">
                     <div class="d-flex align-items-center">
                         <label for="year" class="me-2">Select Year for Chart:</label>
@@ -321,20 +378,9 @@
                         <button type="submit" class="ms-2">Filter</button>
                     </div>
                 </form>
-                <!-- Cards -->
                 <div class="row">
                     <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <div class="card-header">
-                                Total Graduates ({{ $selectedMonth ? date('F', mktime(0, 0, 0, $selectedMonth, 1)) . ' ' : '' }}{{ $selectedYear }})
-                            </div>
-                            <div class="card-body text-center">
-                                {{ $graduateCount }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <div class="card">
+                        <div class="card" data-type="undergraduate" data-bs-toggle="modal" data-bs-target="#studentDataModal">
                             <div class="card-header">
                                 Total Undergraduates ({{ $selectedMonth ? date('F', mktime(0, 0, 0, $selectedMonth, 1)) . ' ' : '' }}{{ $selectedYear }})
                             </div>
@@ -343,8 +389,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card" data-type="graduate" data-bs-toggle="modal" data-bs-target="#studentDataModal">
+                            <div class="card-header">
+                                Total Graduates ({{ $selectedMonth ? date('F', mktime(0, 0, 0, $selectedMonth, 1)) . ' ' : '' }}{{ $selectedYear }})
+                            </div>
+                            <div class="card-body text-center">
+                                {{ $graduateCount }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- Recent Data Table -->
                 <div class="row">
                     <div class="col-12 mb-4">
                         <div class="card">
@@ -354,7 +409,7 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-end mb-3 align-items-center">
                                     <form class="filter-form d-flex align-items-center" method="GET" action="{{ route('admin.printRecentData') }}">
-                                        <label for="print_period" class="me-2">Print Period:</label>
+                                        <p class="me-2">Print Period:</p>
                                         <select name="recent_period" id="print_period" class="me-3" onchange="togglePrintMonthSelect(this)">
                                             <option value="day">This Day</option>
                                             <option value="week">This Week</option>
@@ -384,6 +439,7 @@
                                                 <th>Program</th>
                                                 <th>Type</th>
                                                 <th>OR Date</th>
+                                                <th>Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -394,6 +450,7 @@
                                                     <td>{{ $submission->course }}</td>
                                                     <td>{{ $submission->type }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($submission->ordate)->format('Y-m-d') }}</td>
+                                                    <td>{{ $submission->created_at }}</td>
                                                 </tr>
                                             @empty
                                                 <tr>
@@ -407,7 +464,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Graphs -->
                 <div class="row">
                     <div class="col-md-6 mb-4">
                         <div class="card">
@@ -436,11 +492,11 @@
         <footer class="footer py-4">
             <div class="container d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    <img src="{{ asset('images/logo.png') }}" alt="Pangasinan State University Logo" class="me-2" style="width: 100px; height: auto;">
-                    <h3 class="mb-0 fw-bold" style="font-size: 1.8em;">Pangasinan State University</h3>
+                    Copyright ©2025 Jesus Emmanuel Llamas
+                    <br>
+                    All Rights Reserved . Terms of Use | Privacy Policy
                 </div>
                 <div class="text-end">
-                    <p class="fw-bold mb-2">Contact us:</p>
                     <div class="d-flex align-items-center mb-1">
                         <img src="{{ asset('images/phone.png') }}" alt="Phone" class="me-2" style="width: 20px;">
                         <span>(+63)9168-247-711</span>
@@ -458,17 +514,12 @@
         </footer>
     </div>
 
-    <!-- jQuery (required for DataTables) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-    <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <!-- Chart.js Script -->
     <script>
-        // Toggle Month select visibility for Print form
         function togglePrintMonthSelect(select) {
             const monthSelect = document.getElementById('print_month');
             const monthLabel = document.getElementById('print_month_label');
@@ -481,7 +532,6 @@
             }
         }
 
-        // Define labels based on month selection
         @php
             $labels = $selectedMonth ? [date('F', mktime(0, 0, 0, $selectedMonth, 1))] : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         @endphp
@@ -489,12 +539,10 @@
         const undergradData = @json($selectedMonth ? [$undergraduateMonthlyCounts[$selectedMonth] ?? 0] : array_values($undergraduateMonthlyCounts));
         const gradData = @json($selectedMonth ? [$graduateMonthlyCounts[$selectedMonth] ?? 0] : array_values($graduateMonthlyCounts));
 
-        // Log data for debugging
         console.log('Labels:', labels);
         console.log('Undergraduate Data:', undergradData);
         console.log('Graduate Data:', gradData);
 
-        // Undergraduate Chart
         try {
             const undergradCtx = document.getElementById('undergraduateChart').getContext('2d');
             new Chart(undergradCtx, {
@@ -538,7 +586,6 @@
             console.error('Error rendering undergraduate chart:', error);
         }
 
-        // Graduate Chart
         try {
             const gradCtx = document.getElementById('graduateChart').getContext('2d');
             new Chart(gradCtx, {
@@ -582,7 +629,6 @@
             console.error('Error rendering graduate chart:', error);
         }
 
-        // Initialize DataTables for Recent Data
         $(document).ready(function() {
             $('#recentDataTable').DataTable({
                 responsive: true,
@@ -596,16 +642,58 @@
                     search: "Search recent submissions:",
                     lengthMenu: "<span>Show</span> _MENU_ <span>entries</span>"
                 },
-                dom: 'lfrt<"bottom"ip>', // Custom layout: l=length, f=filter, r=processing, t=table, i=info, p=pagination
+                dom: 'lfrt<"bottom"ip>',
                 order: [[4, 'desc']],
                 columnDefs: [
-                    { orderable: false, targets: [4] }, // Disable sorting on OR Date column
-                    { width: '15%', targets: 0 }, // Control No.
-                    { width: '25%', targets: 1 }, // Full Name
-                    { width: '25%', targets: 2 }, // Program
-                    { width: '15%', targets: 3 }, // Type
-                    { width: '20%', targets: 4 }  // OR Date
+                    { orderable: false, targets: [4] },
+                    { width: '15%', targets: 0 },
+                    { width: '25%', targets: 1 },
+                    { width: '25%', targets: 2 },
+                    { width: '15%', targets: 3 },
+                    { width: '20%', targets: 4 }
                 ]
+            });
+
+            $('.card').on('click', function() {
+                const type = $(this).data('type');
+                console.log('Fetching data for type:', type);
+                const year = $('#year').val();
+                const month = $('#month').val();
+
+                $.ajax({
+                    url: '{{ route("admin.getStudentData") }}',
+                    method: 'GET',
+                    data: { year: year, month: month, type: type },
+                    success: function(response) {
+                        const students = response.students;
+                        let html = '';
+                        if (students.length > 0) {
+                            students.forEach(student => {
+                                html += `
+                                    <tr>
+                                        <td>${student.id}</td>
+                                        <td>${student.fullname}</td>
+                                        <td>${student.course}</td>
+                                        <td>${new Date(student.ordate).toLocaleDateString()}</td>
+                                        <td>${student.address || 'N/A'}</td>
+                                        <td>${student.yearlevel || 'N/A'}</td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            html = '<tr><td colspan="6" class="text-center">No students found.</td></tr>';
+                        }
+                        $('#studentDataTable').html(html);
+                        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                        $('#studentDataModalLabel').text(`${type.charAt(0).toUpperCase() + type.slice(1)} Student Data (${month ? monthNames[parseInt(month) - 1] + ' ' : ''}${year})`);
+                        $('#studentDataModal').modal('show');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching student data:', error);
+                        $('#studentDataTable').html('<tr><td colspan="6" class="text-center">Error loading data.</td></tr>');
+                        $('#studentDataModal').modal('show');
+                    }
+                });
             });
         });
     </script>

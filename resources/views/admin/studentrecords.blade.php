@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - PSU Undergraduate Student Records</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <!-- Tailwind CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <style>
@@ -133,19 +130,18 @@
             color: #003087 !important;
             border-color: #ffc107 !important;
         }
-        /* Adjusted DataTable length menu styling */
         .dataTables_wrapper .dataTables_length {
             display: flex;
             align-items: center;
-            gap: 8px; /* Space between elements */
+            gap: 8px;
             margin-bottom: 10px;
         }
         .dataTables_wrapper .dataTables_length label {
-            margin-bottom: 0; /* Remove default margin */
+            margin-bottom: 0;
         }
         .dataTables_wrapper .dataTables_length select {
             width: auto;
-            min-width: 60px; /* Ensure dropdown isn't too small */
+            min-width: 60px;
         }
     </style>
 </head>
@@ -153,8 +149,8 @@
     <div class="d-flex flex-column min-vh-100">
         <header class="header py-2">
             <div class="container d-flex align-items-center">
-                <img src="{{ asset('images/logo.png') }}" alt="Pangasinan State University Logo" class="me-2" style="width: 100px; height: auto;">
-                <h2 class="mb-0">Pangasinan State University - Admin Dashboard</h2>
+                <img src="{{ asset('images/logo.png') }}" alt="Pangasinan State University Logo" class="me-2" style="width: 70px; height: auto;">
+                <h2 class="mb-0">Registrar's Office - Undergraduate Records</h2>
             </div>
         </header>
 
@@ -211,6 +207,7 @@
                                 <th>Entrance School</th>
                                 <th>OR No.</th>
                                 <th>OR Date</th>
+                                <th>Date</th>
                                 <th>Type</th>
                                 <th>Actions</th>
                             </tr>
@@ -227,9 +224,10 @@
                                     <td>{{ $student->entrance }}</td>
                                     <td>{{ $student->orno }}</td>
                                     <td>{{ $student->ordate }}</td>
+                                    <td>{{ $student->created_at }}</td>
                                     <td>Undergraduate</td>
                                     <td>
-                                        <a href="{{ route('admin.printCredential', ['id' => $student->id, 'type' => 'undergrad']) }}" class="btn btn-primary">Print</a>
+                                        <a href="{{ route('admin.printCredential', ['id' => $student->id, 'type' => 'undergrad']) }}" class="btn btn-primary"><i class="bi bi-printer"></i></a>
                                     </td>
                                 </tr>
                             @empty
@@ -246,11 +244,11 @@
         <footer class="footer py-4">
             <div class="container d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    <img src="{{ asset('images/logo.png') }}" alt="Pangasinan State University Logo" class="me-2" style="width: 100px; height: auto;">
-                    <h3 class="mb-0 fw-bold" style="font-size: 1.8em;">Pangasinan State University</h3>
+                    Copyright ©2025 Jesus Emmanuel Llamas
+                    <br>
+                    All Rights Reserved . Terms of Use | Privacy Policy
                 </div>
                 <div class="text-end">
-                    <p class="fw-bold mb-2">Contact us:</p>
                     <div class="d-flex align-items-center mb-1">
                         <img src="{{ asset('images/phone.png') }}" alt="Phone" class="me-2" style="width: 20px;">
                         <span>(+63)9168-247-711</span>
@@ -268,12 +266,9 @@
         </footer>
     </div>
 
-    <!-- jQuery (required for DataTables) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-    <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script>
@@ -290,7 +285,7 @@
                     lengthMenu: "<span>Show</span> _MENU_ <span>entries</span>"
                 },
                 columnDefs: [
-                    { orderable: false, targets: 10 } // Disable sorting on Actions column
+                    { orderable: false, targets: 10 }
                 ]
             });
         });

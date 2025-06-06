@@ -16,6 +16,7 @@
             width: 210mm;
             min-height: 297mm;
             padding: 25.4mm;
+            margin-top: -100px;
             box-sizing: border-box;
         }
         .header {
@@ -26,9 +27,9 @@
             margin-bottom: 5px;
         }
         .header .logo {
-            width: 100px; /* Increased size */
-            height: 100px; /* Increased size */
-            margin-right: 10px; /* Reduced spacing to the right */
+            width: 100px;
+            height: 100px;
+            margin-right: 10px;
         }
         .header .title {
             text-align: center;
@@ -58,6 +59,7 @@
         .control-no {
             font-weight: bold;
             margin-bottom: 10px;
+            margin-left: 95px;
         }
         .content {
             text-align: center;
@@ -115,7 +117,7 @@
             display: inline-block;
         }
         .note {
-            margin-top: 20px;
+            margin-top: 30px;
             text-align: left;
             font-weight: bold;
         }
@@ -125,24 +127,30 @@
             right: 25.4mm;
             font-size: 10pt;
         }
+        .ootr {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <img src="C:\Users\Emman\Downloads\websys_etr\websys_etr\public\images\logo.png" alt="PSU Logo" class="logo">
+        <img src="C:\Users\Emman\Downloads\websys_etr\websys_etr\public\images\logo.png" style="margin-left: 75px;" alt="PSU Logo" class="logo">
         <div class="title">
             <h5>Republic of the Philippines</h5>
             <h1>Pangasinan State University</h1>
             <h3>URDANETA CITY CAMPUS</h3>
         </div>
-        <img src="C:\Users\Emman\Downloads\websys_etr\websys_etr\public\images\Bagong_Pilipinas_logo.png" alt="Bagong Pilipinas Logo" class="flag">
+        <img src="C:\Users\Emman\Downloads\websys_etr\websys_etr\public\images\Bagong_Pilipinas_logo.png" style="margin-right: 75px;" alt="Bagong Pilipinas Logo" class="flag">
+    </div>
+    <div class="control-no">
+        <h5>{{ $controlNo }}</h5>
+    </div>
+    <div class="ootr">
+        <h3>OFFICE OF THE REGISTRAR</h3>
     </div>
     <div class="page">
-        <div class="control-no">TCG-PSLUC No. {{ $controlNo }}</div>
-        <br>
-        <div class="page-number">Page 1 of 1</div>
+        <h5>TO WHOM IT MAY CONCERN:</h5>
         <div class="content">
-            <h1>TO WHOM IT MAY CONCERN:</h1>
             <p>
                 This is to certify that <strong>{{ $fullname }}</strong> of <strong>{{ $address }}</strong>,
                 a <strong>{{ $course }}</strong> graduate of this University,
@@ -156,10 +164,14 @@
                 MARICEL A. BONGOLAN, MIT<br>
                 Registrar
             </div>
+            <br>
             <div class="seal">
-                NOT VALID WITHOUT UNIVERSITY SEAL [SEAL]
+                NOT VALID WITHOUT UNIVERSITY SEAL
             </div>
+            <br>
         </div>
+        <hr>
+        <br>
         <div class="school-info">
             <p>Name of School/College/University: _____________________________</p>
             <p>Address: _____________________________</p>

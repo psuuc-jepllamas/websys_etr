@@ -16,19 +16,18 @@
             width: 210mm;
             min-height: 297mm;
             padding: 25.4mm;
+            margin-top: -100px;
             box-sizing: border-box;
         }
         .header {
             background-color: #FFC107;
             display: flex;
             align-items: center;
-            padding: 10px 20px;
-            margin-bottom: 5px;
         }
         .header .logo {
-            width: 100px; /* Increased size */
-            height: 100px; /* Increased size */
-            margin-right: 10px; /* Reduced spacing to the right */
+            width: 100px;
+            height: 100px;
+            margin-right: 10px;
         }
         .header .title {
             text-align: center;
@@ -58,6 +57,7 @@
         .control-no {
             font-weight: bold;
             margin-bottom: 10px;
+            margin-left: 95px;
         }
         .content {
             text-align: center;
@@ -115,7 +115,7 @@
             display: inline-block;
         }
         .note {
-            margin-top: 20px;
+            margin-top: 30px;
             text-align: left;
             font-weight: bold;
         }
@@ -124,6 +124,9 @@
             bottom: 25.4mm;
             right: 25.4mm;
             font-size: 10pt;
+        }
+        .ootr {
+            text-align: center;
         }
     </style>
 </head>
@@ -137,9 +140,15 @@
         </div>
         <img src="C:\Users\Emman\Downloads\websys_etr\websys_etr\public\images\Bagong_Pilipinas_logo.png" alt="Bagong Pilipinas Logo" class="flag">
     </div>
+    <div class="control-no">
+        <h5>{{ $controlNo }}</h5>
+    </div>
+    <div class="ootr">
+        <h3>OFFICE OF THE REGISTRAR</h3>
+    </div>
     <div class="page">
+        <h5>TO WHOM IT MAY CONCERN:</h5>
         <div class="content">
-            <h1>TO WHOM IT MAY CONCERN:</h1>
             <p>
                 This is to certify that <strong>{{ $fullname }}</strong> of <strong>{{ $address }}</strong>,
                 a <strong>{{ $yearLevel }}</strong> year <strong>{{ $course }}</strong> of this university
@@ -151,12 +160,16 @@
             </p>
             <div class="registrar">
                 MARICEL A. BONGOLAN, MIT<br>
-                Registrar I
+                Registrar
             </div>
+            <br>
             <div class="seal">
-                NOT VALID WITHOUT COLLEGE SEAL [SEAL]
+                NOT VALID WITHOUT COLLEGE SEAL
             </div>
+            <br>
         </div>
+        <hr>
+        <br>
         <div class="school-info">
             <p>Name of School/College/University: _____________________________</p>
             <p>Address: _____________________________</p>
@@ -166,6 +179,7 @@
             <p>The Registrar</p>
             <p>Pangasinan State University</p>
             <p>Urdaneta Campus, Urdaneta City</p>
+            <br>
             <p>Sir/Madam:</p>
             <p>
                 Please furnish us with the Official Transcript of Records of <strong>{{ $fullname }}</strong>

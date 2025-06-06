@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Transfer Credentials System</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         body {
@@ -119,22 +118,16 @@
 <body>
     <header class="header py-2">
         <div class="container d-flex align-items-center">
-            <img src="{{ asset('images/logo.png') }}" alt="Pangasinan State University Logo" class="me-2" style="width: 100px; height: auto;">
-            <h2 class="mb-0">Pangasinan State University</h2>
+            <img src="{{ asset('images/logo.png') }}" alt="Pangasinan State University Logo" class="me-2" style="width: 65px; height: auto;">
+            <h5 class="mb-0">Pangasinan State University - Region's Premier University of Choice</h5>
         </div>
     </header>
 
     <main class="main">
         <div class="login-container">
-            <div class="login-left">
-                <img src="{{ asset('images/logo.png') }}" alt="Pangasinan State University Logo" class="me-2" style="width: 200px; height: 200px;">
-                <h3>Pangasinan State University</h3>
-                <h4>Undergraduate</h4>
-            </div>
             <div class="login-right">
                 <h4>Fill out your information</h4>
                 <br>
-                <!-- Display success or error messages -->
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
@@ -236,8 +229,9 @@
     <footer class="footer py-4">
         <div class="container d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <img src="{{ asset('images/logo.png') }}" alt="Pangasinan State University Logo" class="me-2" style="width: 100px; height: auto;">
-                <h3 class="mb-0 fw-bold" style="font-size: 1.8em;">Pangasinan State University</h3>
+                Copyright ©2025 Jesus Emmanuel Llamas
+                <br>
+                All Rights Reserved . Terms of Use | Privacy Policy
             </div>
             <div class="text-end">
                 <p class="fw-bold mb-2">Contact us:</p>
@@ -257,7 +251,6 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 </body>

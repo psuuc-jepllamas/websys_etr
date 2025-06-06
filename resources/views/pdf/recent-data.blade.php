@@ -9,13 +9,13 @@
             font-size: 12pt;
             margin: 0;
             padding: 0;
-            width: 210mm; /* A4 width */
-            min-height: 297mm; /* A4 height */
+            width: 210mm;
+            min-height: 297mm;
         }
         .page {
             width: 210mm;
             min-height: 297mm;
-            padding: 25.4mm; /* 1 inch margins */
+            padding: 25.4mm;
             box-sizing: border-box;
         }
         .header {
@@ -26,9 +26,9 @@
             margin-bottom: 5px;
         }
         .header .logo {
-            width: 100px; /* Increased size */
-            height: 100px; /* Increased size */
-            margin-right: 10px; /* Reduced spacing to the right */
+            width: 100px;
+            height: 100px;
+            margin-right: 10px;
         }
         .header .title {
             text-align: center;
@@ -36,7 +36,6 @@
             font-weight: bold;
         }
         .header .title h1 {
-            margin: 0;
             font-size: 24pt;
             color: #000;
         }
@@ -94,13 +93,13 @@
 </head>
 <body>
     <div class="header">
-        <img src="C:\Users\Emman\Downloads\websys_etr\websys_etr\public\images\logo.png" alt="PSU Logo" class="logo">
+        <img src="C:\Users\Emman\Downloads\websys_etr\websys_etr\public\images\logo.png" alt="PSU Logo" style="margin-left: 75px;" class="logo">
         <div class="title">
             <h5>Republic of the Philippines</h5>
             <h1>Pangasinan State University</h1>
             <h3>URDANETA CITY CAMPUS</h3>
         </div>
-        <img src="C:\Users\Emman\Downloads\websys_etr\websys_etr\public\images\Bagong_Pilipinas_logo.png" alt="Bagong Pilipinas Logo" class="flag">
+        <img src="C:\Users\Emman\Downloads\websys_etr\websys_etr\public\images\Bagong_Pilipinas_logo.png" style="margin-right: 75px;" alt="Bagong Pilipinas Logo" class="flag">
     </div>
     <div class="page">
         <div class="table-container">

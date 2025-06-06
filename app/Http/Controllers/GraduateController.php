@@ -15,7 +15,6 @@ class GraduateController extends Controller
 
     public function store(Request $request)
     {
-        // Validate input
         $validated = $request->validate([
             'fullname' => 'required|string|max:255',
             'address' => 'required|string|max:255',
@@ -27,12 +26,10 @@ class GraduateController extends Controller
         ]);
 
         try {
-            // Check for duplicate OR No. in both tables
             $existingUndergraduate = DB::table('undergraduates')->where('orno', $validated['orno'])->first();
             $existingGraduate = DB::table('graduates')->where('orno', $validated['orno'])->first();
 
             if ($existingUndergraduate || $existingGraduate) {
-                // Log duplicate attempt
                 DB::table('duplicate_attempts')->insert([
                     'student_name' => $validated['fullname'],
                     'or_no' => $validated['orno'],
@@ -42,10 +39,9 @@ class GraduateController extends Controller
                     'updated_at' => now(),
                 ]);
 
-                return redirect()->route('user.graduate')->with('error', 'This OR No. has already been used. Please use a unique OR No.');
+                return redirect()->route('user.graduate')->with('error', 'This OR No. has already been used. You can only submit a form once.');
             }
 
-            // Insert new record
             DB::table('graduates')->insert([
                 'fullname' => $validated['fullname'],
                 'address' => $validated['address'],
